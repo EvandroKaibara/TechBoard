@@ -1,34 +1,88 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import { Banner } from './componentes/Banner'
+import { CardEvento } from './componentes/CardEvento'
+import { FormularioDeEvento } from './componentes/FormularioDeEvento'
+import { Tema } from './componentes/Tema'
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  const temas = [
+    {
+      id: 1,
+      nome: 'front-end'
+    },
+    {
+      id: 2,
+      nome: 'back-end'
+    },
+    {
+      id: 3,
+      nome: 'devops'
+    },
+    {
+      id: 4,
+      nome: 'inteligência artificial'
+    },
+    {
+      id: 5,
+      nome: 'data science'
+    },
+    {
+      id: 6,
+      nome: 'cloud'
+    },
+  ]
+
+  const [eventos, setEventos] = useState([
+    {
+      capa: 'https://raw.githubusercontent.com/viniciosneves/tecboard-assets/refs/heads/main/imagem_1.png',
+      tema: temas[0],
+      data: new Date(),
+      titulo: 'Mulheres no Front'
+    }
+  ])
+
+  function adicionarEvento (evento){
+    setEventos([...eventos, evento])
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <main>
+      <header>
+        <img src="/imgs/logo.png" />
+      </header>
+      <Banner />
+      <FormularioDeEvento 
+        temas={temas} 
+        aoSubmeter={adicionarEvento}
+      />
+      <section className="container">
+        {temas.map(function (tema) {
+          if (!eventos.some(function(evento){
+            return evento.tema.id == tema.id
+          })) {
+            return null
+          }
+          return(      
+            <section key={tema.id}>
+              <Tema tema={tema} />
+              <div className="eventos">
+                {eventos
+                .filter(function (evento) {
+                  return evento.tema.id == tema.id
+                })
+                .map(function (evento, index){
+                  return(
+                    <CardEvento evento={evento} key={index}/>
+                  )
+                })}
+              </div>
+            </section>
+          )
+        })}
+      </section>
+    </main >
   )
 }
 
